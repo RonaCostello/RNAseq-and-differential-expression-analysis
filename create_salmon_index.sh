@@ -10,5 +10,6 @@ if [ -f *fa.gz ]
     echo "transcript.fa.gz found, creating index with Salmon"
     salmon index -t *fa.gz -i salmon_index
   else
-    echo "no transcript.fa.gz found so no salmon index being made"
+    echo "no transcript.fa.gz found so no salmon index being made, script exiting"
+    exit 1
 fi
