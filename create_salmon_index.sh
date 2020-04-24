@@ -5,11 +5,15 @@
 
 cd $1
 
-if [ -f *fa.gz ]
-  then
-    echo "transcript.fa.gz found, creating index with Salmon"
-    salmon index -t *fa.gz -i salmon_index
-  else
-    echo "no transcript.fa.gz found so no salmon index being made, script exiting"
-    exit 1
+if [[ -d ./salmon_index ]]; then
+	echo "salmon index directory already exists. Not creating a new index"
+else
+  if [ -f *fa.gz ]
+    then
+      echo "transcript.fa.gz found, creating index with Salmon"
+      salmon index -t *fa.gz -i salmon_index
+    else
+      echo "no transcript.fa.gz found so no salmon index being made, script exiting"
+      exit 1
+  fi
 fi
