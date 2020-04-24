@@ -15,7 +15,12 @@ threads=$5
 read_type=$6
 
 cd $data_directory
-mkdir data
+if [[ -d ./data ]]; then
+	echo "data directory already exists"
+else
+ 	mkdir data
+fi
+
 cd data
 
 for i in $(seq $start_number $end_number)
@@ -25,13 +30,16 @@ for i in $(seq $start_number $end_number)
 		echo fetching $SRA_concensous_number$i read data
 		fasterq-dump $SRA_concensous_number$i
 
-		if [$read_type == 'PE']; then
+		if [[ "$read_type" == 'PE' ]]; then
 			trimmomatic PE -threads $threads $SRA_concensous_number$((i))_1.fastq $SRA_concensous_number$((i))_2.fastq $SRA_concensous_number$((i))_1_trimmed.fq $SRA_concensous_number$((i))_1_trimmed_unpaired.fq $SRA_concensous_number$((i))_2_trimmed.fq $SRA_concensous_number$((i))_2_trimmed_unpaired.fq ILLUMINACLIP:../../../shell_scripts/all_adaptors.fasta:2:30:10 LEADING:20 TRAILING:20 SLIDINGWINDOW:5:20 HEADCROP:1 MINLEN:35
-		elif [$read_type == 'SE']; then
+		elif [[ "$read_type" == 'SE' ]]; then
+			echo 'yes'
 			trimmomatic SE -threads $threads $SRA_concensous_number$((i)).fastq $SRA_concensous_number$((i))_trimmed.fq ILLUMINACLIP:../../../shell_scripts/all_adaptors.fasta:2:30:10 LEADING:20 TRAILING:20 SLIDINGWINDOW:5:20 HEADCROP:1 MINLEN:35
 		else
 			echo 'read type (paired or single end) not given correctly, exiting script'
 			exit 1
+		fi
+
 		cd ..
 done
 cd ..
